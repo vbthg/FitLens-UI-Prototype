@@ -1,5 +1,5 @@
-/* A fictional, internally consistent year for the local design prototype.
-   No personal history is read or inferred. Daily steps are not added to routes. */
+/* Fictional training-year data for the design prototype.
+   No personal history, routes, cardio estimates or daily steps are read. */
 (() => {
   'use strict';
   const $ = selector => document.querySelector(selector);
@@ -8,29 +8,24 @@
   const scenes = [...document.querySelectorAll('.scene')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const themes = [
-    ['#ed7853', '#243f38', '#fff0cb'],
-    ['#214f48', '#fff0cb', '#e8cf83'],
-    ['#f4f1e5', '#29483b', '#cb7855'],
-    ['#e8cf83', '#243f38', '#f7f4ed'],
-    ['#e5e9d8', '#29483b', '#b77351'],
-    ['#d5ccdF', '#293b42', '#f8f0d5'],
-    ['#243f38', '#fff0cb', '#e8cf83'],
-    ['#a9bdc9', '#243f38', '#f7f1de'],
-    ['#edb299', '#29483b', '#fff0cb'],
-    ['#e6e5d6', '#29483b', '#b77455'],
-    ['#214f48', '#fff0cb', '#e8cf83']
+    ['#ed7853','#243f38','#fff0cb'], ['#e5e9d8','#29483b','#a56549'],
+    ['#214f48','#fff0cb','#e8cf83'], ['#f0ddc9','#29483b','#8c5b49'],
+    ['#dcd6e8','#293b42','#766085'], ['#a9bdc9','#243f38','#f7f1de'],
+    ['#e6e5d6','#29483b','#b77455'], ['#214f48','#fff0cb','#e8cf83']
   ];
-  const monthly = [8, 9, 11, 10, 13, 12, 14, 13, 18, 12, 11, 11]; // 142
+  const monthly = [4,5,6,4,7,6,5,7,8,7,6,7]; // 72 completed workouts
+  const weeksWithTraining = new Set(Array.from({length:32},(_,i)=>Math.floor(i*51/31)));
+  for(let i=0;i<52;i++){const dot=document.createElement('i');dot.className=weeksWithTraining.has(i)?'has-training':'';dot.style.setProperty('--i',i);document.querySelector('.year-week-grid').append(dot);}
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   monthly.forEach((value, i) => {
     const bar = document.createElement('div');
-    bar.className = `month-bar${value === 18 ? ' peak' : ''}`;
+    bar.className = `month-bar${value === 8 ? ' peak' : ''}`;
     bar.style.cssText = `--value:${value};--i:${i}`;
     bar.title = `${months[i]}: ${value} activities`;
     bar.innerHTML = `<span>${months[i][0]}</span>`;
     $('.month-bars').append(bar);
   });
-  $('.month-bars').setAttribute('aria-label', monthly.map((n, i) => `${months[i]}: ${n}`).join('; ') + ' activities');
+  $('.month-bars').setAttribute('aria-label', monthly.map((n, i) => `${months[i]}: ${n}`).join('; ') + ' workouts');
   let page = 0, elapsed = 0, lastTime = null, manualPause = false;
   let holding = false, pointer = null, holdTimer = 0, holdFired = false;
   let touchMoved = false, hasFocus = false;
@@ -110,7 +105,7 @@
     });
     $('#prev').disabled = page === 0;
     $('#next').disabled = page === scenes.length - 1;
-    $('#page-number').textContent = `${String(page + 1).padStart(2, '0')} / ${scenes.length}`;
+    $('#page-number').textContent = `${String(page + 1).padStart(2, '0')} / ${String(scenes.length).padStart(2,'0')}`;
     $('#announcement').textContent = `Chapter ${page + 1} of ${scenes.length}. ${scene.dataset.title}.`;
     renderCounters(reduced.matches ? 1 : 0);
     syncPause();
@@ -229,7 +224,7 @@
     button.textContent = 'Making your poster…';
     try {
       await document.fonts.ready;
-      const [shoe, mountain, ticket] = await Promise.all(['walking-shoe', 'mountain', 'cinema-ticket'].map(loadIllustration));
+      const [bus, bear, ticket] = await Promise.all(['city-bus', 'bear', 'cinema-ticket'].map(loadIllustration));
       const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1440;
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#f7f1de'; ctx.fillRect(0, 0, 1080, 1440);
@@ -238,11 +233,11 @@
       ctx.font = '1000 270px Nunito'; ctx.fillText('2025', 65, 375);
       ctx.fillStyle = '#cb7855'; ctx.font = '600 180px Nunito'; ctx.fillText('↗', 815, 360);
       const fit = (img, x, y, w, h) => { const r = Math.min(w / img.naturalWidth, h / img.naturalHeight); const iw = img.naturalWidth * r, ih = img.naturalHeight * r; ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih); };
-      fit(mountain, 415, 400, 600, 340);
-      ctx.save(); ctx.translate(280, 595); ctx.rotate(-.18); fit(shoe, -250, -140, 500, 280); ctx.restore();
+      fit(bus, 360, 450, 650, 270);
+      ctx.save(); ctx.translate(280, 595); ctx.rotate(-.18); fit(bear, -180, -150, 360, 300); ctx.restore();
       ctx.save(); ctx.translate(700, 445); ctx.rotate(.18); fit(ticket, -110, -80, 220, 160); ctx.restore();
       ctx.strokeStyle = '#29483b66'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(80, 810); ctx.lineTo(1000, 810); ctx.stroke();
-      const stats = [['142', 'activities'], ['71 h', 'in motion'], ['512 km', 'travelled'], ['3,840 m', 'climbed']];
+      const stats = [['72', 'workouts'], ['54 h', 'in training'], ['864', 'working sets'], ['84,200 kg', 'lifting volume']];
       stats.forEach(([value, label], i) => {
         const x = 80 + (i % 2) * 490, y = 920 + Math.floor(i / 2) * 155;
         ctx.fillStyle = '#29483b'; ctx.font = '950 74px Nunito'; ctx.fillText(value, x, y);

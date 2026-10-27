@@ -1,5 +1,5 @@
 (()=>{'use strict';window.FitLensStart=function(item,{plannedId=null}={}){
- if(window.FitLensActivities?.active())throw new Error('An activity is already running. Finish or discard it in Activity first.');const M=FitLensTraining;if(!item?.items?.length)throw new Error('Add an exercise before starting this workout.');
+ const M=FitLensTraining;if(!item?.items?.length)throw new Error('Add an exercise before starting this workout.');
  let areas=[];try{areas=FitLensProfile.createStore(localStorage,sessionStorage).read().body.areas;}catch{}
  if(item.items.some(i=>M.exercises[i.id]?.regions.some(r=>areas.includes(r))))throw new Error('Some exercises use areas you avoid. Open the workout and replace them before starting.');
  const routine=['upper','lower','full'].includes(item.routine)?item.routine:'full';

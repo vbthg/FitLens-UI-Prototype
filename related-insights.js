@@ -6,13 +6,12 @@
   const walking = [['workout','steps-truth'],['workout','pacing'],['recovery','active-recovery'],['body','mental-health']];
   const shelves = {
     'steps.html': ['#steps-main', 'More about walking', walking, true],
-    'post-walk-restored.html': ['#postwalk-scroll', 'More about your walk', [['recovery','active-recovery'],['body','rpe'],['body','mental-health']], false],
     'food.html': ['#food-overview-view', 'More about eating well', [['eating','fuel'],['eating','carbs'],['eating','protein'],['eating','fats']], true],
     'workouts.html': ['#training-content', 'More about training', [['workout','consistency'],['workout','variety'],['workout','progressing-safely'],['body','rpe']], false],
     'workout-details.html': ['.details-scroll', 'More about your training', [['workout','progressing-safely'],['body','rpe'],['workout','consistency']], true],
     'plan.html': ['#training-content', 'More about a balanced week', [['workout','consistency'],['recovery','rest-day'],['recovery','supercompensation'],['recovery','returning-break']], false],
     'streak.html': ['#rhythm-scroll', 'More about your rhythm', [['workout','consistency'],['recovery','rest-day'],['recovery','returning-break'],['recovery','burnout-signs']], true],
-    'home.html': ['#home-scroll', 'A little daily reading', [['body','mental-health'],['sleep','sleep-hygiene'],['eating','fuel']], false]
+    'home.html': ['#home-scroll', 'Daily reading', [['body','mental-health'],['sleep','sleep-hygiene'],['eating','fuel']], false]
   };
   const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const phone = document.querySelector('.fl-phone,.food-phone,.rhythm-phone');

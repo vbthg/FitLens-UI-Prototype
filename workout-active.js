@@ -32,7 +32,7 @@ let logs=plan.map(ex=>Array.from({length:ex.sets},()=>({weight:ex.weight,reps:nu
 try{const state=JSON.parse(sessionStorage.getItem('fitlens-ui-active'));if(params.get('resume')==='1'&&state?.routine===routineKey&&JSON.stringify(state.ids)===JSON.stringify(plan.map(i=>i.id))){rhythmSessionId=state.rhythmSessionId||rhythmSessionId;logs=state.logs;index=state.index;elapsed=state.elapsed;phase=state.phase==='stopped'?'stopped':'working';}}catch{}
 const requested=plan.findIndex(i=>i.id===params.get('exercise'));if(requested>=0)index=requested;
 function save(){try{sessionStorage.setItem('fitlens-ui-active',JSON.stringify({routine:routineKey,ids:plan.map(i=>i.id),logs,index,elapsed,phase,rhythmSessionId}));}catch{}}
-function commitRhythm(){if(phase!=='stopped'&&totalDone()===0){phase='completed';save();$('#finish-session').href='activity.html';return;}if(phase!=='stopped'&&totalDone()>0){const h=FitLensTraining.complete({sessionId:params.get('planned'),name:customSessionName||names[routineKey],items:plan,seconds:elapsed,logs,id:rhythmSessionId});sessionStorage.setItem('fitlens:last-completed-id',h.id);phase='completed';save();$('#finish-session').href='workout-review.html?routine='+routineKey+'&completed='+encodeURIComponent(h.id);return h.id;}}
+function commitRhythm(){if(phase!=='stopped'&&totalDone()===0){phase='completed';save();$('#finish-session').href='workouts.html';return;}if(phase!=='stopped'&&totalDone()>0){const h=FitLensTraining.complete({sessionId:params.get('planned'),name:customSessionName||names[routineKey],items:plan,seconds:elapsed,logs,id:rhythmSessionId});sessionStorage.setItem('fitlens:last-completed-id',h.id);phase='completed';save();$('#finish-session').href='workout-review.html?routine='+routineKey+'&completed='+encodeURIComponent(h.id);return h.id;}}
 $('#finish-session').addEventListener('click',commitRhythm);
 function say(message){$('#session-announcement').textContent=message;}
 function time(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
@@ -60,7 +60,7 @@ function render(){const ex=plan[index],n=currentRow();phone.dataset.phase=phase;
  $('#working-actions').hidden=phase==='rest';$('#rest-panel').hidden=phase!=='rest';
  $('#complete-set').disabled=phase==='paused'||phase==='stopped';
  $('#complete-set>span').textContent=phase==='stopped'?'Session stopped':phase==='paused'?'Session paused':n<0?(index===plan.length-1?'Finish Workout':'Next Exercise'):`Complete Set ${n+1}`;
- $('#action-note').textContent=phase==='paused'?'Resume from the menu.':phase==='stopped'?'Listen to your body.':'Your pace. Your session.';
+ $('#action-note').textContent=phase==='paused'?'Resume from the menu.':phase==='stopped'?'Session stopped.':'Enter your weight and reps.';
  $('#next-exercise').textContent=plan[index+1]?.name||'Your post-workout check-in';$('#next-count').textContent=plan[index+1]?`${String(index+2).padStart(2,'0')} / ${String(plan.length).padStart(2,'0')}`:'↗';
  $('#pause-session').firstChild.textContent=phase==='paused'?'Resume session ':'Pause session ';$('#pause-session').disabled=phase==='stopped';$('#skip-exercise').disabled=phase==='stopped';updateCameraLink();
  if(phase==='rest')renderRest();

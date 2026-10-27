@@ -152,7 +152,7 @@
   function applyLatestCheckIn() {
     let checkin;
     try { checkin = JSON.parse(sessionStorage.getItem('fitlens:last-check-in')); } catch { return; }
-    if (!checkin || !['walk', 'workout'].includes(checkin.kind) ||
+    if (!checkin || checkin.kind !== 'workout' ||
       new Date(checkin.at).toDateString() !== new Date().toDateString()) return;
     const moods = {
       content: ['content', 'A little movement.', 'A moment well spent.', 'Content'],
@@ -181,8 +181,8 @@
     headline.append(accent);
     const link = document.querySelector('#home-last-checkin');
     const routine = ['upper','lower','full'].includes(checkin.routine) ? checkin.routine : 'upper';
-    link.href = checkin.kind === 'walk' ? 'post-walk-restored.html?v=home-motion-5' : `workout-review.html?routine=${routine}&v=home-motion-5`;
-    document.querySelector('#home-checkin-label').textContent = checkin.kind === 'walk' ? `${mood[3]} · Latest walk check-in` : 'Latest workout check-in';
+    link.href = `workout-review.html?routine=${routine}&v=home-motion-5`;
+    document.querySelector('#home-checkin-label').textContent = 'Latest workout check-in';
     link.hidden = false;
   }
   const content = document.querySelector('#home-scroll');

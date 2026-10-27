@@ -87,7 +87,7 @@ function updateFace() {
   $('#finish-context').textContent = `${level[0]} effort · ${hasDiscomfort ? 'Body notes added' : 'Your moment to reflect'}`;
   $('#effort-description').textContent = level[1];
   $('#effort').setAttribute('aria-valuetext', `${value} out of 10, ${level[0]}. ${level[1]}`);
-  $('#hero-caption').textContent = hasDiscomfort ? 'Let’s give your body a little care.' : value >= 8 ? 'That took a lot. Take a breath.' : 'Take a breath. Let’s check in.';
+  $('#hero-caption').textContent = hasDiscomfort ? 'Add a note about any discomfort.' : value >= 8 ? 'Record how this session felt.' : 'How did this session feel?';
   const mascotExpression=hasDiscomfort?'concerned':value<=3?'content':value<=5?'happy':value<=7?'energized':value<=9?'tired':'exhausted';
   reviewFace.set(mascotExpression,{animate:!reducedMotion.matches,duration:360});
   const comparison = value < 4 ? 'below' : value > 6 ? 'above' : 'within';
