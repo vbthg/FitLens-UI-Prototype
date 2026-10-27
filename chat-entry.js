@@ -14,7 +14,7 @@ function connect(link,exercise){link.addEventListener('click',event=>{
  const title=storedSession?.name||{upper:'Upper Body',lower:'Lower Body',full:'Full Body'}[key];
  const editor=exercise?{index:selected,fields:Object.fromEntries(['sets','reps','rest'].map(field=>[field,document.querySelector('#exercise-form').elements[field].value]))}:null;
  const context=item?{type:'exercise',workoutTitle:title,id:item.id,title:item.name,sets:item.sets,reps:item.reps,image:exerciseImage(item)}:{type:'workout',title,image:'assets/illustrations/'+key+'.svg'};
- const snapshot={routine:key,singleId:storedSession?.id||null,items:items.map(item=>({...item})),context,editor,scrollTop:document.querySelector('.details-scroll').scrollTop,from:new URLSearchParams(location.search).get('from')};
+ const snapshot={routine:key,singleId:storedSession?.id||null,items:items.map(item=>({...item})),context,editor,scrollTop:document.querySelector('.details-scroll').scrollTop,from:new URLSearchParams(location.search).get('from'),returnUrl:location.pathname+location.search};
  try{const token='chat-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);sessionStorage.setItem('fitlens:chat-context:'+token,JSON.stringify(snapshot));link.href='chat.html?context='+encodeURIComponent(token);}catch{event.preventDefault();announce('Couldn’t open the conversation with your workout. Please try again.');}
 });}
 connect(workoutLink,false);connect(exerciseLink,true);

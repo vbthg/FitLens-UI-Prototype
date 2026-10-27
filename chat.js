@@ -17,7 +17,7 @@ const guides={
 };
 function save(){try{sessionStorage.setItem(storageKey,JSON.stringify({history,context,proposal}));}catch{}}
 function foodConversation(){return handoff?.source==='food'||params.get('source')==='food';}
-function backUrl(){if(foodConversation()){if(!handoff)return 'food.html';const u=new URL(handoff.returnUrl,location.href);u.searchParams.set('chatReturn',token);return u.pathname+u.search;}if(!handoff)return 'workouts.html';const query=new URLSearchParams({routine:handoff.routine,chatReturn:token});if(handoff.singleId)query.set('session',handoff.singleId);if(handoff.from==='picker')query.set('from','picker');return 'workout-details.html?'+query;}
+function backUrl(){if(foodConversation()){if(!handoff)return 'food.html';const u=new URL(handoff.returnUrl,location.href);u.searchParams.set('chatReturn',token);return u.pathname+u.search;}if(!handoff)return 'workouts.html';if(handoff.returnUrl){const u=new URL(handoff.returnUrl,location.href);if(u.origin===location.origin&&u.pathname.endsWith('/workout-details.html')){u.searchParams.set('chatReturn',token);return u.pathname+u.search;}}const query=new URLSearchParams({routine:handoff.routine,chatReturn:token});if(handoff.singleId)query.set('session',handoff.singleId);if(handoff.from==='picker')query.set('from','picker');return 'workout-details.html?'+query;}
 $('#chat-back').href=backUrl();$('#chat-back').setAttribute('aria-label',foodConversation()?'Back to Food':handoff?'Back to your workout':'Back to workouts');
 function updateContext(){
  if(foodConversation()){updateFoodContext();return;}

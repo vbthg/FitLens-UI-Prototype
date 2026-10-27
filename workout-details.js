@@ -20,7 +20,7 @@ function openSheet(dialog){placeSheet(dialog);dialog.showModal()}
 window.addEventListener('resize',()=>document.querySelectorAll('dialog[open]').forEach(placeSheet));
 document.querySelectorAll('.close-sheet').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 function announce(text){$('#workout-announcement').textContent=text}
-function render(){const list=$('#exercise-list');list.replaceChildren();items.forEach((item,index)=>{
+function render(){renderPlannedFocus();const list=$('#exercise-list');list.replaceChildren();items.forEach((item,index)=>{
  const row=document.createElement('div');row.className='exercise-row';const ordinal=document.createElement('span');ordinal.className='exercise-index';ordinal.textContent=String(index+1).padStart(2,'0');row.append(ordinal);
  const button=document.createElement('button');button.type='button';button.className='exercise-main';button.setAttribute('aria-label',`Edit ${item.name}, ${item.sets} sets, ${item.reps} reps`);
  button.innerHTML=`<span class="exercise-art${exerciseIllustrations[item.id]?' has-illustration':''}"><img src="${exerciseImage(item)}" alt=""></span><span class="exercise-copy"><strong></strong><span><b>${item.sets} sets</b> × <span class="reps"></span> reps</span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>`;
@@ -58,3 +58,6 @@ if(planned&&storedSession.status!=='completed'){const replace=document.createEle
 if(storedSession.status==='completed'){fields.querySelectorAll('input').forEach(e=>e.disabled=true);save.hidden=schedule.hidden=$('#add-exercise').hidden=$('#edit-workout').hidden=true;$('#start-workout').disabled=true;$('#start-workout').textContent='Completed';document.querySelectorAll('.exercise-main').forEach(b=>b.disabled=true);tell('Completed. Your workout is recorded in Today.');}
 
 if(planned&&storedSession.status==='planned'&&!draft){const done=document.createElement('button');done.type='button';done.className='option-row';done.textContent='Already completed this workout?';done.onclick=()=>location.href='workouts.html?log='+encodeURIComponent(planned);$('#options-sheet').append(done);}
+
+function renderPlannedFocus(){let host=document.querySelector('#routine-muscle-map');if(!host){host=document.createElement('section');host.id='routine-muscle-map';host.setAttribute('aria-label','Planned training focus');document.querySelector('.equipment-note').before(host);}FitLensMuscleMap.mount(host,FitLensMuscles.aggregate([{items}],{planned:true}),{mode:'Workout preview · planned sets',intro:items.reduce((sum,item)=>sum+item.sets,0)+' planned sets'});}
+const muscleOriginalEdit=editExercise;editExercise=function(index){muscleOriginalEdit(index);let host=document.querySelector('#exercise-muscle-map');if(!host){host=document.createElement('section');host.id='exercise-muscle-map';host.className='mm-exercise';document.querySelector('#exercise-form').after(host);}FitLensMuscleMap.mount(host,FitLensMuscles.aggregate([{items:[items[index]]}],{planned:true}),{title:'Muscle groups',mode:'Exercise preview',intro:items[index].name});};

@@ -10,7 +10,6 @@
   const mouth = svg.querySelector('.fl-mouth-shape');
   const mask = svg.querySelector('clipPath path');
   const halo = phone.querySelector('.fl-halo');
-  const toggle = document.querySelector('#home-motion');
   const announcement = document.querySelector('#home-announcement');
   const happy = mouth.getAttribute('d');
   const delighted = FitLensFace.faces.energized.mouth;
@@ -22,9 +21,9 @@
   eyes[0].before(gaze);
   eyes.forEach(eye => gaze.append(eye));
 
-  // This preview opts into motion as requested. The on-screen switch pauses it
-  // locally without touching the browser's or operating system's preferences.
-  try { paused = sessionStorage.getItem('fitlens:home-motion') === 'paused'; } catch {}
+  const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+  paused=motionPreference.matches;
+  motionPreference.addEventListener('change',()=>{paused=motionPreference.matches;syncMotion();});
 
   function animate(element, frames, options) {
     const animation = element.animate(frames, options);
@@ -88,10 +87,6 @@
   function syncMotion() {
     phone.dataset.motion = paused ? 'paused' : 'full';
     phone.dataset.running = String(visible);
-    toggle.setAttribute('aria-pressed', String(paused));
-    const label = paused ? 'Resume ambient motion' : 'Pause ambient motion';
-    toggle.setAttribute('aria-label', label);
-    toggle.title = label;
     if (paused || !visible) settle();
     scheduleBlink();
   }
@@ -140,12 +135,7 @@
   });
   face.addEventListener('pointerleave', () => gaze.setAttribute('transform', 'translate(0 0)'));
   face.addEventListener('blur', () => gaze.setAttribute('transform', 'translate(0 0)'));
-  toggle.addEventListener('click', () => {
-    paused = !paused;
-    try { sessionStorage.setItem('fitlens:home-motion', paused ? 'paused' : 'full'); } catch {}
-    syncMotion();
-    announcement.textContent = paused ? 'Ambient motion paused.' : 'Ambient motion resumed.';
-  });
+
 
   // Carry only the chosen expression and activity type across pages in this
   // demo tab. Free-text reflections and body-area details stay on their page.

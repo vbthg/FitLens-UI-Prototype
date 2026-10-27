@@ -1,6 +1,6 @@
 # FitLens — Hướng dẫn demo cho người thuyết trình
 
-**Bản bàn giao: 27/10/2026 · Prototype giao diện mobile · Tiếng Việt cho người demo, giao diện tiếng Anh.**
+**Bản bàn giao: 28/10/2026 · Prototype giao diện mobile · Tiếng Việt cho người demo, giao diện tiếng Anh.**
 
 FitLens giúp người dùng tạo nhịp vận động phù hợp, ghi nhận cảm nhận sau buổi tập và tìm gợi ý ăn uống, kiến thức liên quan. Điểm nhấn là cách trình bày gần gũi: mascot có biểu cảm, số liệu gắn với hình minh họa và không khuyến khích tập bất chấp đau.
 
@@ -22,6 +22,17 @@ FitLens giúp người dùng tạo nhịp vận động phù hợp, ghi nhận c
 6. Mở sẵn các đường dẫn trong mục 2. Chạy thử các thao tác ở mục 3 trước khi lên lớp.
 
 **Nếu chỉ xem nhanh:** mở `home.html` trực tiếp cũng có thể hiển thị, nhưng demo chính thức nên chạy bằng server để địa chỉ và dữ liệu trình duyệt ổn định. Sau khi server đã chạy và tải trang, các tài nguyên UI chính nằm trong repo; không cần gọi AI, bản đồ hay Health trực tuyến.
+
+### Mới: Training focus và hồ sơ
+
+- Trong **Insights**, bấm thẻ **Training focus** có các lớp xanh để mở heatmap mẫu. Đường dẫn dự phòng: [Training focus — dữ liệu mẫu](http://127.0.0.1:8000/training-focus.html?demo=1&period=month).
+- Chọn **Week / Month / Year**, chạm một vùng cơ rồi xem bài tập đóng góp bên dưới. Kịch bản nhanh: Month → chạm vùng lưng → Year, khoảng 10 giây trong phần Insights hiện có; không kéo dài tour 4 phút.
+- Mẫu cố định đến **28/10/2026**: tuần 28 set, tháng 10 có 160 set trong 12 buổi, năm 2026 có 1.752 set. Tháng 9 có 12 buổi / 204 set, khớp biểu đồ recap tháng. Có nhãn **Sample data**; đây là dữ liệu minh họa, không phải dữ liệu cá nhân hay số đo cơ thể.
+- **Use my data** chuyển về các set thực sự đánh dấu hoàn thành trong trình duyệt. Xem mẫu không ghi thêm buổi tập vào lịch sử; kỳ chưa có log sẽ trống.
+- Heatmap cũng nằm trong **chi tiết workout/từng bài** (planned sets) và **recap sau tập** (completed sets). Các vùng Lats, Traps, Upper back và Lower back được chia riêng; màu là mức nhấn mạnh tương đối trong từng kỳ, không phải hồi phục cơ.
+- Đổi hình cơ thể nam/nữ tại **Profile → Body illustration**, không phải trên biểu đồ. Có [thiết lập ban đầu tùy chọn](http://127.0.0.1:8000/welcome.html); có thể bỏ qua để bắt đầu demo ngay. Không cần trình bày toàn bộ setup trong 4 phút.
+
+![Training focus với dữ liệu mẫu](docs/demo/training-focus.png)
 
 ## 2. Thứ tự mở trang và chọn thời lượng demo
 

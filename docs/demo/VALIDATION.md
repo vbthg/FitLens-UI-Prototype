@@ -26,3 +26,12 @@ Bản này cập nhật cách viết chức năng, font/lề/điều khiển dù
 Chưa diễn tập trên máy teammate/máy chiếu hoặc điện thoại thật. Camera, Health, AI, thông báo và nội dung sức khỏe chưa được xác thực như một sản phẩm native. Chưa có video dự phòng. Dùng README tour 4 phút và tự diễn tập trên đúng máy trước buổi trình bày.
 
 Ảnh README được chụp từ bản sao hiện tại. `review.png` là recap mẫu; `plan.png` và `workout.png` từ luồng đã ghi một hiệp. `rhythm.png` dùng trạng thái active. Ảnh `walk.png` còn lưu từ bản trước nhưng không còn là màn của tour hiện tại.
+
+## Cập nhật 28/10/2026 — Training focus, hồ sơ và bản sao hiện tại
+
+- Kiểm tra lại trên chính thư mục repo được phục vụ qua HTTP local: 19 trang hiện có, dẫn hướng recap tháng, các chương recap năm và tải poster PNG; không có lỗi JavaScript hay tài nguyên thiếu.
+- Luồng Plan → bắt đầu tập → hoàn thành 1 set → nghỉ/bỏ qua nghỉ → kết thúc sớm → recap thật → Home 1/3 → Plan đánh dấu hoàn thành đã qua.
+- Kiểm tra thêm onboarding tùy chọn, lựa chọn giới tính/hình minh họa độc lập trong Profile, hình heatmap tự đọc hồ sơ và không có bộ chọn nam/nữ ngay trên biểu đồ.
+- Training focus: dữ liệu thật chỉ tính set hoàn thành; dữ liệu mẫu có nhãn rõ, tuần/tháng/năm lần lượt 28/160/1.752 set tại mốc 28/10/2026; chuyển qua lại không ghi dữ liệu mẫu vào lịch sử thật. Biểu đồ mẫu tháng 9 có 12 buổi / 204 set.
+- Kiểm tra heatmap, xem trước workout/từng bài, chọn ngày và bố cục ở viewport 320/390/430px. Đây là kiểm tra Chrome headless với kích thước mobile, chưa phải kiểm tra thiết bị vật lý.
+- Thẻ Training focus dùng các dải xanh phẳng, tụ phía trên và mở rộng dần sang trái ở đáy; không có gradient hay icon cơ thể. Có nguồn/giấy phép MIT cho SVG giải phẫu trong assets/anatomy/.
