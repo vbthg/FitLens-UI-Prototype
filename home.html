@@ -6,6 +6,9 @@
   <meta name="color-scheme" content="light">
   <title>FitLens — Home UI</title>
   <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="home-profile.css?v=1">
+  <script src="profile-model.js?v=1" defer></script>
+  <script src="home-profile.js?v=1" defer></script>
   <link rel="stylesheet" href="home-refresh.css?v=reminders-8">
   <link rel="stylesheet" href="steps-sun.css?v=sun-1">
   <link rel="stylesheet" href="mobile-polish.css?v=1">
@@ -13,7 +16,7 @@
 <script src="steps-sun-data.js?v=sun-2" defer></script>
   <script src="steps-sun.js?v=sun-1" defer></script>
   <script src="home.js?v=home-motion-5" defer></script>
-<link rel="stylesheet" href="mascot-face.css?v=faces-1"><script src="setup-plan-model.js?v=8" defer></script><script src="home-plan.js?v=reminders-8" defer></script></head>
+<link rel="stylesheet" href="mascot-face.css?v=faces-1"><script src="setup-plan-model.js?v=8" defer></script><script src="home-plan.js?v=reminders-8" defer></script><link rel="stylesheet" href="rhythm.css?v=1"><script src="rhythm-model.js?v=1" defer></script><script src="rhythm-art.js?v=1" defer></script><script src="home-rhythm.js?v=1" defer></script><script src="navigation.js" defer></script><link rel="stylesheet" href="training-hub.css"><script src="training-model.js" defer></script><script src="training-launch.js" defer></script><link rel="stylesheet" href="activity.css"><script src="activity-model.js" defer></script><script src="activity-icons.js" defer></script><script src="training-home.js" defer></script><link rel="stylesheet" href="related-insights.css?v=1"><script src="insights-data.js?v=1" defer></script><script src="related-insights.js?v=1" defer></script></head>
 <body>
 <!-- Local design preview. All activity values are sample data. -->
 <div id="fitlens-home-preview">
@@ -33,9 +36,10 @@
       </svg><span class="fl-face-spark fl-spark-one" aria-hidden="true">✦</span><span class="fl-face-spark fl-spark-two" aria-hidden="true">✧</span></button>
     </header>
     <main class="fl-content fl-home-scroll" id="home-scroll">
-      <div class="fl-greeting">Good morning, friend</div>
-      <h1 id="home-headline">A little movement.<br>A <span>brighter day.</span></h1>
+      <div class="home-personal-line"><div class="fl-greeting" id="home-profile-greeting">Good morning</div><a href="profile.html" id="home-profile-link">Your profile</a></div>
+      <div class="home-welcome"><h1 id="home-headline">A little movement.<br>A <span>brighter day.</span></h1><svg class="home-welcome-art" viewBox="0 0 70 75" aria-hidden="true"><path d="M8 64q18-15 49-6" fill="none" stroke="#9fb18d" stroke-width="2" stroke-linecap="round"/><path d="M35 60V37" fill="none" stroke="#718b68" stroke-width="2.5" stroke-linecap="round"/><path d="M35 48C15 48 17 33 20 31c14 0 18 8 15 17" fill="#b5c89e"/><path d="M35 40c-1-17 14-23 22-18 1 15-9 23-22 18" fill="#849f7d"/><circle cx="19" cy="14" r="8" fill="#e7bc78"/><path d="M10 21l-4 3m22-3 4 3M19 2v-2" stroke="#d7aa68" stroke-width="1.5" stroke-linecap="round"/></svg></div>
       <a class="fl-last-checkin" id="home-last-checkin" href="post-walk-restored.html" hidden><span class="checkin-dot" aria-hidden="true"></span><span id="home-checkin-label"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></a>
+      <section class="home-rhythm" id="home-rhythm" aria-label="Your weekly rhythm"></section>
       <section class="fl-activity" aria-labelledby="fl-activity-title">
         <div class="fl-section-heading"><h2 id="fl-activity-title">Today’s activity</h2></div>
         <div class="fl-bento">
@@ -60,7 +64,7 @@
         <div class="fl-food-divider" aria-hidden="true"></div>
         <h2 id="fl-food-preview-title" class="fl-food-heading">Food for today</h2>
         <a class="fl-food-editorial-row" href="food.html" aria-label="Explore meals: Three meals to make at home">
-          <span class="fl-food-main-line">Three meals to make at home</span>
+          <span class="food-preview-photos" aria-hidden="true"><img src="assets/food/demo/com-trung-sot-thai-demo.jpg" alt=""><img src="assets/food/demo/com-ga-hoi-an-demo.jpg" alt=""><img src="assets/food/demo/dau-phu-sot-ca-demo.jpg" alt=""></span><span class="fl-food-main-line">Three meals to make at home</span>
           <span class="fl-food-editorial-action">
             <span>Explore meals</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>

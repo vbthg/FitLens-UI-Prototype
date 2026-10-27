@@ -1,5 +1,6 @@
 (() => {
 'use strict';
+if(new URLSearchParams(location.search).has('sessions'))return;
 const $=s=>document.querySelector(s),m=FitLensReminders,params=new URLSearchParams(location.search);
 const draft=params.get('from')==='draft',singleId=params.get('single'),planKey=draft?'fitlens:weekly-plan-edit':'fitlens:weekly-plan';
 const names=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];

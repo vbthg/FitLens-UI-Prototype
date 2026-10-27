@@ -14,11 +14,12 @@ const sessions = {
   full: { name: 'Full Body', minutes: 56, exercises: ['Goblet Squat', 'Bench Press', 'Romanian Deadlift', 'Lat Pulldown', 'Shoulder Press', 'Seated Row', 'Lateral Raise'] }
 };
 const routineKey = new URLSearchParams(location.search).get('routine');
-const session = sessions[routineKey] || sessions.upper;
+const completed=FitLensTraining.read().history.find(h=>h.id===new URLSearchParams(location.search).get('completed'));
+const session = completed?{name:completed.name,minutes:Math.max(1,Math.round(completed.seconds/60)),exercises:completed.items.map(i=>FitLensTraining.exercises[i.id]?.name||i.id)}:sessions[routineKey] || sessions.upper;
 $('#session-name').textContent = session.name;
 $('#stat-duration').replaceChildren(document.createTextNode(session.minutes), Object.assign(document.createElement('span'), { textContent: ' min' }));
 $('#stat-exercises').textContent = session.exercises.length;
-$('#stat-sets').textContent = session.exercises.length * 3;
+$('#stat-sets').textContent = completed?completed.logs.flat().filter(s=>s.done).length:session.exercises.length * 3;
 const effortLevels = [
   ['Almost effortless', 'Gentle movement. Breathing feels natural and easy.', '#acd0d7', '#dce9df', '#a4c9cc'],
   ['Very light', 'Comfortable and relaxed. Plenty of energy left.', '#a7ccca', '#dce8d7', '#aacbc4'],

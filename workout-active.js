@@ -18,18 +18,22 @@ const catalog={
  calf:{name:'Calf Raise',title:['CALF','RAISE'],art:'raise',sets:3,reps:'12–15',rest:60,weight:5,last:[15,15,12],equipment:'Dumbbells · Calves',weightNote:'Dumbbell weight is per hand. Illustration placeholder.'},
  biceps:{name:'Biceps Curl',title:['BICEPS','CURL'],art:'press',sets:3,reps:'10–12',rest:60,weight:5,last:[12,10,10],equipment:'Dumbbells · Biceps',weightNote:'Dumbbell weight is per hand. Illustration placeholder.'}
 };
+Object.assign(catalog,window.FitLensTraining?.exercises||{});
 const exerciseIllustrations={squat:'gobletsquat',raise:'lateralraise',pull:'latpulldown',legpress:'legpress',rdl:'romaniandeadlift',row:'seatedrow',press:'shoulderpress',cable:'tricepspushdown'};
-function exerciseImage(item){return exerciseIllustrations[item.id]?`assets/workout_illustrations/${exerciseIllustrations[item.id]}.svg`:`assets/icons/exercise-${item.art}.svg`;}
+function exerciseImage(item){return exerciseIllustrations[item.id]?`assets/workout_illustrations/${exerciseIllustrations[item.id]}.svg`:item.art==='bodyweight'?'assets/illustrations/full.svg':`assets/icons/exercise-${item.art}.svg`;}
 const defaults={upper:['bench','pull','row','press','raise','cable'],lower:['squat','rdl','legpress','curl','calf'],full:['squat','bench','rdl','pull','press','row','raise']};
 let customSessionName=null,customSessionId=null;
 let plan=defaults[routineKey].map(id=>({...catalog[id],id}));
 try{const draft=JSON.parse(sessionStorage.getItem('fitlens-ui-session-plan'));if(draft?.routine===routineKey&&Array.isArray(draft.items)&&draft.items.length)plan=draft.items.filter(i=>catalog[i.id]).map(i=>({...catalog[i.id],...i}));}catch{}
 try{const draft=JSON.parse(sessionStorage.getItem('fitlens-ui-session-plan'));if(draft?.routine===routineKey&&draft.sessionId===params.get('session')){customSessionName=typeof draft.sessionName==='string'?draft.sessionName:null;customSessionId=draft.sessionId;}}catch{}
 if(!plan.length)plan=defaults[routineKey].map(id=>({...catalog[id],id}));
+let rhythmSessionId='workout-'+Date.now();
 let logs=plan.map(ex=>Array.from({length:ex.sets},()=>({weight:ex.weight,reps:null,done:false}))),index=0,phase='working',remaining=0,elapsed=0;
-try{const state=JSON.parse(sessionStorage.getItem('fitlens-ui-active'));if(params.get('resume')==='1'&&state?.routine===routineKey&&JSON.stringify(state.ids)===JSON.stringify(plan.map(i=>i.id))){logs=state.logs;index=state.index;elapsed=state.elapsed;phase=state.phase==='stopped'?'stopped':'working';}}catch{}
+try{const state=JSON.parse(sessionStorage.getItem('fitlens-ui-active'));if(params.get('resume')==='1'&&state?.routine===routineKey&&JSON.stringify(state.ids)===JSON.stringify(plan.map(i=>i.id))){rhythmSessionId=state.rhythmSessionId||rhythmSessionId;logs=state.logs;index=state.index;elapsed=state.elapsed;phase=state.phase==='stopped'?'stopped':'working';}}catch{}
 const requested=plan.findIndex(i=>i.id===params.get('exercise'));if(requested>=0)index=requested;
-function save(){try{sessionStorage.setItem('fitlens-ui-active',JSON.stringify({routine:routineKey,ids:plan.map(i=>i.id),logs,index,elapsed,phase}));}catch{}}
+function save(){try{sessionStorage.setItem('fitlens-ui-active',JSON.stringify({routine:routineKey,ids:plan.map(i=>i.id),logs,index,elapsed,phase,rhythmSessionId}));}catch{}}
+function commitRhythm(){if(phase!=='stopped'&&totalDone()===0){phase='completed';save();$('#finish-session').href='activity.html';return;}if(phase!=='stopped'&&totalDone()>0){const h=FitLensTraining.complete({sessionId:params.get('planned'),name:customSessionName||names[routineKey],items:plan,seconds:elapsed,logs,id:rhythmSessionId});sessionStorage.setItem('fitlens:last-completed-id',h.id);phase='completed';save();$('#finish-session').href='workout-review.html?routine='+routineKey+'&completed='+encodeURIComponent(h.id);return h.id;}}
+$('#finish-session').addEventListener('click',commitRhythm);
 function say(message){$('#session-announcement').textContent=message;}
 function time(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 function currentRow(){return logs[index].findIndex(s=>!s.done);}
@@ -39,7 +43,7 @@ function openSheet(dialog){placeSheet(dialog);dialog.showModal();}
 window.addEventListener('resize',()=>document.querySelectorAll('dialog[open]').forEach(placeSheet));
 document.querySelectorAll('.close-dialog').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 $('#routine-name').textContent=customSessionName||names[routineKey];
-$('#back-routine').href=customSessionId?'workout-details.html?session='+encodeURIComponent(customSessionId)+'&v=reminders-8':'workout-details.html?routine='+routineKey;
+$('#back-routine').href=params.has('planned')?'workout-details.html?planned='+encodeURIComponent(params.get('planned')):customSessionId?'workout-details.html?session='+encodeURIComponent(customSessionId)+'&v=reminders-8':'workout-details.html?routine='+routineKey;
 for(const id of ['finish-session','pain-review'])$('#'+id).href='workout-review.html?routine='+routineKey;
 function makeInput(field,row,n){const input=document.createElement('input');input.type='number';input.inputMode=field==='weight'?'decimal':'numeric';input.min=field==='weight'?'0':'1';input.max=field==='weight'?'1000':'999';input.step=field==='weight'?'0.5':'1';input.value=row[field]??'';input.placeholder='—';input.setAttribute('aria-label',`${field==='weight'?'Weight in kilograms':'Repetitions'} for set ${n+1}`);input.addEventListener('input',()=>{row[field]=input.value===''?null:Number(input.value);input.setCustomValidity('');save();});return input;}
 function updateCameraLink(){const ex=plan[index],n=currentRow(),row=logs[index][Math.max(0,n)];const p=new URLSearchParams({routine:routineKey,from:'active',exercise:ex.id,name:ex.name,set:String(Math.max(0,n)+1),sets:String(logs[index].length),weight:String(row.weight??ex.weight),reps:ex.reps,unit:ex.equipment.includes('Dumbbells')?'kg / hand':'kg'});$('#check-form').href='camera-setup.html?'+p;}
@@ -63,7 +67,7 @@ function render(){const ex=plan[index],n=currentRow();phone.dataset.phase=phase;
 }
 function renderRest(){const ex=plan[index],n=currentRow();$('#rest-clock').textContent=time(remaining);$('#rest-title').innerHTML=remaining?'Rest easy<span>.</span>':'Ready when<br>you are<span>.</span>';$('#rest-eyebrow').textContent=remaining?'TAKE A BREATHER':'YOUR NEXT SET';$('#skip-rest').innerHTML=remaining?'Skip rest <span>↗</span>':'Back to sets <span>↗</span>';$('#next-set-note').textContent=`Next: Set ${n+1} · ${logs[index][n]?.weight??ex.weight} kg${ex.equipment.includes('Dumbbells')?' / hand':''} · ${ex.reps} reps`;}
 function complete(n){if(['stopped','paused'].includes(phase))return;const line=$('#set-rows').children[n],inputs=[...line.querySelectorAll('input')];let valid=true;inputs.forEach(input=>{if(input.value===''||!input.checkValidity()){input.setCustomValidity(input.value===''?'Enter what you completed.':'Check this value.');if(valid){input.reportValidity();input.focus();}valid=false;}});if(!valid)return;logs[index][n].done=true;remaining=plan[index].rest;phase=currentRow()>=0&&remaining>0?'rest':'working';render();save();say(`Set ${n+1} complete.${phase==='rest'?' Rest timer started.':''}`);}
-$('#complete-set').addEventListener('click',()=>{const n=currentRow();if(n>=0)complete(n);else if(index<plan.length-1){index++;phase='working';render();save();$('.session-scroll').scrollTop=0;}else location.href='workout-review.html?routine='+routineKey;});
+$('#complete-set').addEventListener('click',()=>{const n=currentRow();if(n>=0)complete(n);else if(index<plan.length-1){index++;phase='working';render();save();$('.session-scroll').scrollTop=0;}else {const id=commitRhythm();location.href='workout-review.html?routine='+routineKey+(id?'&completed='+encodeURIComponent(id):'');}});
 $('#add-set').addEventListener('click',()=>{if(phase==='stopped')return;logs[index].push({weight:plan[index].weight,reps:null,done:false});render();save();say('Set added.');});
 $('#skip-rest').addEventListener('click',()=>{phase='working';remaining=0;render();save();});
 $('#add-rest').addEventListener('click',()=>{remaining+=15;renderRest();save();});
@@ -73,6 +77,6 @@ $('#open-lineup').addEventListener('click',()=>{const list=$('#lineup-list');lis
 $('#session-menu').addEventListener('click',()=>openSheet($('#menu-dialog')));
 $('#pause-session').addEventListener('click',()=>{phase=phase==='paused'?'working':'paused';remaining=0;$('#menu-dialog').close();render();save();});
 $('#skip-exercise').addEventListener('click',()=>{if(index<plan.length-1)index++;phase='working';remaining=0;$('#menu-dialog').close();render();save();$('.session-scroll').scrollTop=0;});
-$('#report-pain').addEventListener('click',()=>{phase='stopped';remaining=0;render();save();openSheet($('#pain-dialog'));});
+$('#report-pain').addEventListener('click',()=>{window.FitLensRhythm?.pause();phase='stopped';remaining=0;render();save();openSheet($('#pain-dialog'));});
 setInterval(()=>{if(phase==='working'||phase==='rest'){elapsed++;$('#elapsed').textContent=time(elapsed);if(phase==='rest'&&remaining>0){remaining--;renderRest();if(remaining===0)say('Rest finished. Start your next set when you are ready.');}save();}},1000);
 render();

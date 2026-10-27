@@ -13,30 +13,33 @@ const recapExerciseData = {
   'Leg Curl': { reps: 12, weight: 25, main: ['hamstrings'], support: [] },
   'Calf Raise': { reps: 15, weight: 30, main: ['calves'], support: [] }
 };
+Object.assign(recapExerciseData,{
+'Chair Squat':{reps:10,weight:0,main:['quads','glutes'],support:['core']},'Wall Push-up':{reps:10,weight:0,main:['chest'],support:['shoulders','triceps']},'Standing Hip Hinge':{reps:10,weight:0,main:['hamstrings','glutes'],support:['back']},'Glute Bridge':{reps:10,weight:0,main:['glutes'],support:['hamstrings','core']},'Dead Bug':{reps:8,weight:0,main:['core'],support:[]},'Band Biceps Curl':{reps:10,weight:0,main:['biceps'],support:[]},'Biceps Curl':{reps:10,weight:5,main:['biceps'],support:[]}});
 const muscleLabels = { chest: 'Chest', back: 'Back', shoulders: 'Shoulders', biceps: 'Biceps', triceps: 'Triceps', core: 'Core', quads: 'Quads', hamstrings: 'Hamstrings', glutes: 'Glutes', calves: 'Calves' };
 const muscleScores = Object.fromEntries(Object.keys(muscleLabels).map(id => [id, { score: 0, direct: 0, supporting: 0, exercises: [] }]));
 let recapVolume = 0;
-for (const name of session.exercises) {
+for (const [exerciseIndex,name] of session.exercises.entries()) {
   const exercise = recapExerciseData[name];
   if (!exercise) continue;
-  recapVolume += exercise.weight * exercise.reps * 3;
+  const finished=completed?completed.logs[exerciseIndex]?.filter(s=>s.done)||[]:null;
+  recapVolume += completed?finished.reduce((total,s)=>total+Number(s.weight||0)*Number(s.reps||0),0):exercise.weight * exercise.reps * 3;
   for (const [muscles, isMain] of [[exercise.main, true], [exercise.support, false]]) {
     for (const id of muscles) {
       const muscle = muscleScores[id];
-      muscle.score += isMain ? 3 : 1.5;
-      muscle[isMain ? 'direct' : 'supporting'] += 3;
-      muscle.exercises.push({ name, isMain });
+      muscle.score += (completed?finished.length:3)*(isMain?1:.5);
+      muscle[isMain ? 'direct' : 'supporting'] += completed?finished.length:3;
+      muscle.exercises.push({ name, isMain, count:completed?finished.length:3 });
     }
   }
 }
 $('#volume-total').textContent = recapVolume.toLocaleString('en-US');
-$('#bear-comparison').replaceChildren(document.createTextNode(`About ${Math.round(recapVolume / 180)} bears’ worth.`), document.createElement('br'), document.createTextNode('One rep at a time.'));
+if(completed&&recapVolume===0)$('#bear-comparison').textContent='Bodyweight work counts, too.';else $('#bear-comparison').replaceChildren(document.createTextNode(`About ${Math.round(recapVolume / 180)} bears’ worth.`), document.createElement('br'), document.createTextNode('One rep at a time.'));
 $('#time-comparison').replaceChildren(document.createTextNode(`≈ ${Math.round(session.minutes / 15)} quick matches.`), document.createElement('br'), document.createTextNode('Real-life level up.'));
-for (let i = 0; i < session.exercises.length * 3; i++) $('#set-mosaic').append(document.createElement('i'));
+for (let i = 0; i < (completed?completed.logs.flat().filter(s=>s.done).length:session.exercises.length * 3); i++) $('#set-mosaic').append(document.createElement('i'));
 const activeMuscles = Object.keys(muscleScores).filter(id => muscleScores[id].score > 0).sort((a, b) => muscleScores[b].score - muscleScores[a].score);
 const leading = activeMuscles.slice(0, 3).map(id => muscleLabels[id].toLowerCase());
-$('#muscle-intro').textContent = `${leading[0][0].toUpperCase() + leading[0].slice(1)}, ${leading[1]} & ${leading[2]} led the way.`;
-const maxMuscleScore = Math.max(...Object.values(muscleScores).map(muscle => muscle.score));
+$('#muscle-intro').textContent = leading.length?leading.map(s=>s[0].toUpperCase()+s.slice(1)).join(', ')+' led the way.':'Your movement, one set at a time.';
+const maxMuscleScore = Math.max(1,...Object.values(muscleScores).map(muscle => muscle.score));
 const ns = 'http://www.w3.org/2000/svg';
 function svgElement(tag, attributes = {}) {
   const element = document.createElementNS(ns, tag);
@@ -109,7 +112,9 @@ function selectMuscle(id) {
   $('#muscle-detail-count').textContent = muscle.direct && muscle.supporting ? `${muscle.direct} direct · ${muscle.supporting} supporting sets` : muscle.direct ? `${muscle.direct} direct sets` : `${muscle.supporting} supporting sets`;
   $('#muscle-detail-exercises').replaceChildren();
   for (const exercise of muscle.exercises) {
-    const item = document.createElement('li'), name = document.createElement('span'), role = document.createElement('span'); name.textContent = exercise.name; role.textContent = exercise.isMain ? 'Main · 3 sets' : 'Supporting · 3 sets'; item.append(name, role); $('#muscle-detail-exercises').append(item);
+    const item = document.createElement('li'), name = document.createElement('span'), role = document.createElement('span'); name.textContent = exercise.name; role.textContent = (exercise.isMain?'Main':'Supporting')+' · '+exercise.count+' sets'; item.append(name, role); $('#muscle-detail-exercises').append(item);
   }
 }
-selectMuscle(activeMuscles[0]);
+if(activeMuscles.length)selectMuscle(activeMuscles[0]);else $('#muscle-detail-title').textContent='No completed sets to map yet.';
+
+if(completed){const note=document.querySelector('.counting-note p:last-child');if(note)note.textContent='This recap uses the sets you marked complete. Bodyweight movements contribute no added-load volume.';}
