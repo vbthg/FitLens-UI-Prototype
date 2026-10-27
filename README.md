@@ -25,7 +25,7 @@ FitLens giúp người dùng tạo nhịp vận động phù hợp, ghi nhận c
 
 ## 2. Thứ tự mở trang và chọn thời lượng demo
 
-**Luồng chính bắt buộc có lịch tập và workout:** Today → Plan → chi tiết buổi → đang tập → recap → Home/Plan. Các phần Walk, Food và story bổ sung vào sau luồng này; không dùng chúng để thay toàn bộ nghiệp vụ tập luyện.
+**Tour UI có cả lịch tập, workout và những màn thị giác nổi bật.** Không cần hoàn tất một chu trình nghiệp vụ trong 4 phút; mỗi chặng chọn một tương tác tiêu biểu.
 
 | Thứ tự | Trang | Dùng thế nào |
 |---|---|---|
@@ -37,94 +37,63 @@ FitLens giúp người dùng tạo nhịp vận động phù hợp, ghi nhận c
 | Mở rộng | [Food](http://127.0.0.1:8000/food.html?preview=walk) | Danh mục 30 món, công thức và tìm kiếm/lọc. |
 | Kết | [Insights](http://127.0.0.1:8000/insights.html) → [recap năm](http://127.0.0.1:8000/yearly-recap.html) | Thẻ kiến thức và story năm với chuyển màu, minh họa, poster. |
 
-- **3 phút:** Today → Plan (chuẩn bị sẵn lịch đã Apply) → workout (một hiệp) → recap → kết quả Home. Không bỏ cả Plan hoặc Workout để chỉ diễn màn đẹp.
-- **5 phút:** luồng chính đầy đủ ở mục 3, kết bằng một đoạn ngắn recap năm.
-- **7–8 phút:** luồng 5 phút + Walk/route khoảng 1 phút + Food khoảng 40 giây + mở một bài kiến thức. Recap sau tập và story vẫn là điểm nhấn thị giác.
+- **Thời lượng đã chốt: 4 phút cho UI.** Dùng bảng thời gian ở mục 3, mở sẵn các tab để giảm thời gian điều hướng.
+- **Khi được hỏi sâu:** dùng các hướng dẫn chi tiết ở mục 4. Chúng không nằm trong đồng hồ 4 phút.
+- Luồng Plan → Workout → recap thực đã được kiểm tra, nhưng trong tour được phép chuyển sang màn mẫu để giới thiệu thiết kế nếu nói rõ ngữ cảnh.
 
 ![Today — nhịp tuần và bản sắc FitLens](docs/demo/home.png)
 
-## 3. Kịch bản chính — lịch tập → workout → recap, khoảng 5 phút
+## 3. Kịch bản chính — tour UI đúng 4 phút
 
-### Chuẩn bị trước khi bấm giờ
+**Mục tiêu buổi trình bày:** cho thấy độ phủ và chất lượng thiết kế, hiệu ứng, tương tác tiêu biểu. Đây là tour các màn UI; không cần thao tác xong cả một buổi tập hoặc tạo đủ dữ liệu để mở màn tiếp theo. Luồng liên thông đã kiểm tra được ghi ở mục 4 và biên bản kiểm tra để tra cứu khi được hỏi.
 
-1. Dùng một phiên trình duyệt sạch theo mục 6 và cùng địa chỉ server. Không mở file trực tiếp khi cần chứng minh dữ liệu liên thông: trình duyệt có thể lưu `file://` khác nhau giữa từng trang.
-2. Mở `streak.html` **không có `preview`**, bấm **Set a weekly goal**, chọn **3** và lưu bằng **Set my goal**. Nếu đã có mục tiêu 3 buổi thì giữ nguyên. Trở về `home.html`. Việc này giúp đoạn kết có tiến độ thật **1 of 3 sessions**.
-3. Đảm bảo Plan không còn bản nháp cũ và không có buổi đang chạy. Nếu diễn tập đã tạo lịch sử, chuẩn bị phiên sạch từ trước; không xóa dữ liệu trong lúc nói.
-4. Nếu tuần hiện tại còn ít hơn 3 ngày trống, chọn mục tiêu **2** khi còn 2 ngày; nếu chỉ còn 1 ngày, demo gợi ý lịch **tuần tới**, rồi dùng một workout trong thư viện để minh họa tập hôm nay. Nói rõ hai phần này. Dòng cuối ở Home sẽ theo mục tiêu Rhythm đã đặt, không nhất thiết bằng số buổi của lịch vừa gợi ý.
-5. Mở sẵn Insights/recap năm ở tab dự phòng. Các tab này phục vụ phần kết thị giác; giữ luồng Plan → Workout → Review trong cùng tab chính.
+### Chuẩn bị trước khi lên trình bày
 
-### 0:00–0:20 — Today: bắt đầu từ nhu cầu người dùng
+- Mở sẵn các tab theo đúng thứ tự bảng dưới, cùng một cửa sổ và cùng kích thước mobile. Kiểm tra ảnh/font đã tải đủ; đừng dành thời gian gõ URL trước lớp.
+- **Plan:** diễn tập tạo gợi ý trước. Giữ một tuần đã Apply hoặc một bản nháp đang chờ Apply để có thẻ lịch ngay khi mở. Không điền cả biểu mẫu Focus/Week/Setup trong 4 phút.
+- **Workout:** mở sẵn `workout-details.html` hoặc chi tiết buổi từ Plan. Nếu muốn minh họa ghi hiệp, chuẩn bị sẵn giá trị KG/REPS hợp lệ; chỉ bấm hoàn thành một hiệp.
+- **Recap sau tập:** mở riêng `workout-review.html` để xem đầy đủ thiết kế mẫu với gấu/mascot. Nói một lần đầu buổi rằng một số màn đang dùng dữ liệu minh họa; không nhận các số mẫu là kết quả của hiệp vừa bấm.
+- **Walk:** mở sẵn `steps.html` và `post-walk-restored.html`. Biết chỗ kéo Explore your route, không tìm kiếm giữa lúc nói.
+- **Recap năm:** mở sẵn `yearly-recap.html`; tập chọn chương bằng các đoạn tiến độ. Dừng ở bìa trước khi bắt đầu tour. Không chờ chạy đủ 11 chương.
+- Có thể mở thêm tab Camera và Monthly recap để thay thế một đoạn nếu đó là phần muốn nhấn mạnh; không cộng thêm thời gian vào lịch 4 phút.
 
-- **Mở:** `home.html` không có `preview`.
-- **Thao tác:** chỉ nhanh mascot, tiến độ tuần và đường vào **Your plan** hoặc tab đáy **Plan**.
-- **Lời dẫn:** “FitLens giúp người dùng lên lịch phù hợp, thực hiện buổi tập và ghi lại cảm nhận sau đó. Mình sẽ demo một vòng từ lên kế hoạch đến kết quả.”
-- **Kỳ vọng:** tiến độ thật đang lưu là 0/3 nếu đã chuẩn bị phiên mới. Không dùng `home.html?preview=active` cho đoạn chứng minh tăng số buổi.
+### Phân bổ thời gian — mỗi chặng một điểm nhấn
 
-### 0:20–1:25 — Plan: lựa chọn → bản nháp → lịch được áp dụng
+| Mốc | Màn và thao tác cần show | Lời dẫn ngắn |
+|---|---|---|
+| **0:00–0:15** | **Today:** mascot, màu thương hiệu và nhịp tuần. Cuộn một nhịp tới các khối hoạt động. | “Đây là tổng quan ngày, gom tiến độ và gợi ý tiếp theo. Một số màn trong tour dùng dữ liệu mẫu để trình diễn UI.” |
+| **0:15–0:40** | **Plan:** cho xem lịch có sẵn; mở một buổi hoặc chỉ nhanh bản nháp rồi Apply. Nếu đã diễn tập, minh họa đổi ngày/giờ bằng một thao tác. | “Lịch có thể được gợi ý, xem trước và chỉnh lại theo thời gian của người dùng.” |
+| **0:40–1:10** | **Workout:** lướt danh sách bài trong chi tiết → Start Workout → nhập/đánh dấu một hiệp, thấy rest panel → Skip rest. | “Trong buổi tập có bài hiện tại, ghi sets/reps và nghỉ giữa hiệp.” |
+| **1:10–1:20** | **Camera:** mở Check my form hoặc tab chuẩn bị sẵn; cho xem khung minh họa, rồi chuyển tab recap. | “Đây là thiết kế camera hỗ trợ form; hiện chưa bật nhận diện thật.” |
+| **1:20–1:45** | **Recap sau tập:** mẫu gấu và các khối thống kê; kéo effort để mascot đổi biểu cảm. Dừng một nhịp ở biểu cảm mới. | “Phần tổng kết kết hợp số liệu với cảm nhận người dùng; mascot phản hồi theo mức độ mệt.” |
+| **1:45–2:20** | **Walk:** khoảng 12 giây cho mặt trời Steps và overview; 23 giây cho route, kéo slider, đổi Elevation/Heart rate. | “Đi bộ có góc nhìn tổng quan và bản recap đường đi có thể khám phá.” |
+| **2:20–2:40** | **Food:** vuốt hàng món ăn → mở một công thức → lướt nguyên liệu/cách làm. | “Gợi ý ăn uống đi cùng công thức và cách ghi lại bữa ăn.” |
+| **2:40–2:55** | **Insights:** lướt một hàng thẻ → mở bài → đóng. | “Kiến thức có trong thư viện và cuối các màn liên quan, dùng chung mẫu thẻ và phần đọc.” |
+| **2:55–3:45** | **Recap năm:** bìa → chương bản đồ **Your familiar loop** → so sánh khối lượng **Heavier than you think** → poster **Your year, to keep**. | “Recap kể hành trình bằng chuyển động, minh họa và poster. Đây là một năm giả lập để thể hiện thiết kế.” |
+| **3:45–4:00** | Giữ poster cuối, kết thúc; không mở thêm luồng. | “Tour vừa rồi đi qua lập lịch, tập luyện, cảm nhận, đi bộ, ăn uống và kiến thức. Bước tiếp theo là hoàn thiện các tích hợp thật.” |
 
-1. Bấm tab **Plan**, rồi **Suggest my week.**
-2. Qua **Focus → Week → Setup**. Dùng **Build a habit**, **3 buổi**, **30 min** khi đủ ngày; giữ các ngày còn trống mà giao diện đã chọn. Chọn **At home / Bodyweight** để demo đơn giản; không đánh dấu vùng chấn thương trong luồng chính.
-3. Bấm **Preview my week**. Dừng một nhịp ở nhãn **A SUGGESTION, STILL YOURS TO CHANGE**: đây là bản nháp, chưa phải lịch đã lưu áp dụng.
-4. Bấm **Apply week**. Chỉ vào các thẻ buổi trên lịch; tên bài, ngày và thời lượng đã rõ. Không chuyển sang tập từ một bản nháp chưa Apply.
-5. Có thể chỉ nhanh **Set times together**; phần đặt giờ hoặc kéo đổi ngày dành cho mục 4 nếu còn thời gian.
+### Chuyển màn nhanh mà vẫn dễ hiểu
 
-**Lời dẫn:** “Người dùng chọn mục tiêu, thời lượng và điều kiện tập. FitLens đề xuất một tuần để xem trước, người dùng vẫn có thể sửa rồi mới áp dụng.”
+- Mỗi chặng chỉ làm **một tương tác có tác dụng rõ**, không bấm mọi nút. Đợi hiệu ứng đổi trạng thái hiện lên rồi mới đi tiếp.
+- Tab chuẩn bị sẵn giúp bỏ thời gian điều hướng; không dùng để giả vờ dữ liệu giữa các màn đã liên thông. Nếu chuyển sang recap mẫu, gọi đúng là “thiết kế phần recap”.
+- Nếu chậm hơn kịch bản: bỏ đoạn Camera 10 giây hoặc rút Food xuống một màn; ưu tiên giữ Plan, Workout, mascot và đoạn kết recap năm. Không tăng tốc nói đến mức người xem không kịp nhìn.
+- **Không cố show đủ 19 trang trong 4 phút.** Tour đã phủ hầu hết các nhóm tính năng quan trọng; Profile, Chat, Activity nhập tay, Rhythm chi tiết, Reminders và Monthly recap để trong phần hỏi đáp.
+- Nếu muốn thay một đoạn: **Monthly recap** thay cho Camera + một phần Food (khoảng 20 giây); **Rhythm** thay cho một phần Walk (khoảng 15 giây). Dùng bản đã diễn tập, không chọn thay ngay trên sân khấu.
+- Khi được yêu cầu dừng lại, dừng và giải thích. Mục giới hạn cùng các bước nghiệp vụ chi tiết nằm bên dưới; không dựa vào tốc độ lướt để xử lý một tính năng đang lỗi.
 
-**Kỳ vọng:** nhãn bản nháp biến mất, các buổi xuất hiện trên lịch. Gợi ý hiện chạy bằng danh mục và luật cục bộ, chưa gọi AI trực tuyến. Nếu bước Focus đã có thông tin hồ sơ, màn có thể bắt đầu ở Week; đi theo các bước đang hiện.
+### Những điểm đẹp nên để người xem kịp nhìn
 
 ![Plan — lịch sau khi áp dụng gợi ý](docs/demo/plan.png)
 
-### 1:25–1:55 — Chi tiết workout: người dùng biết mình sắp tập gì
-
-- **Thao tác:** bấm tên buổi đầu tiên trên Plan (ưu tiên buổi hôm nay). Xem tiêu đề, danh sách **Your lineup**, số sets/reps, thời gian nghỉ và dụng cụ.
-- **Tùy chọn ngắn:** bấm một bài trong danh sách để xem thiết lập rồi đóng; chưa sửa số liệu nếu chưa diễn tập.
-- **Lời dẫn:** “Mỗi buổi có danh sách bài và thông số cụ thể. Người dùng xem trước hoặc điều chỉnh trước khi bắt đầu.”
-- **Tiếp:** bấm **Start Workout**. Nếu bị chặn vì vùng cần tránh, đó là kiểm tra ràng buộc; quay lại sửa lựa chọn hoặc dùng workout phù hợp, không cố bỏ qua cảnh báo.
-
-### 1:55–2:55 — Trong buổi tập: ghi một hiệp, nghỉ, rồi kết thúc demo
-
-1. Cho xem bài hiện tại, đồng hồ buổi tập, **Your sets**, cột **KG / REPS** và nút **Complete Set 1**.
-2. Ở hàng **set 1**, nhập **KG = 0** nếu là bodyweight và **REPS = 10** để làm dữ liệu minh họa. Với bài dùng tạ, dùng mức minh họa đã chuẩn bị và nói rõ đang mô phỏng. Không để trống reps rồi bấm hoàn thành.
-3. Bấm **Complete Set 1** hoặc nút ✓ ở hàng đầu. Chỉ vào dấu đã ghi và bảng nghỉ **Rest easy** nếu xuất hiện. Bấm **Skip rest** để không chờ hết thời gian nghỉ trong lớp.
-4. Chỉ nhanh **Exercise guide**, danh sách bài và **Check my form**. Camera là nhánh bổ sung, không cần rời màn tập trong luồng 5 phút.
-5. Bấm **Session options** (••• phía trên) → **Finish & check in**.
-
-**Lời dẫn:** “Mình mô phỏng ghi một hiệp để cho thấy cách nhập kết quả và nghỉ giữa hiệp. Để tiết kiệm thời gian demo, mình kết thúc buổi sớm ở đây rồi xem phần check-in.”
-
-**Kỳ vọng:** đi tới recap có ID buổi vừa ghi trong địa chỉ, không phải recap độc lập. Cần hoàn thành ít nhất **một hiệp hợp lệ**; chưa có hiệp nào mà Finish thì bản hiện tại có thể về Activity và không tạo recap. Không nói người dùng đã hoàn tất toàn bộ chương trình khi mới nhập một hiệp. Prototype hiện có thể đánh dấu buổi đã kết thúc là completed ngay cả khi kết thúc sớm; đây chưa phải tiêu chuẩn đánh giá chất lượng buổi tập.
-
 ![Workout — các hiệp và điều khiển buổi tập](docs/demo/workout.png)
 
-### 2:55–3:40 — Recap: kết quả vừa ghi và mascot phản hồi
-
-- **Thao tác:** xem các khối tổng kết; kéo thanh độ mệt qua vài mức rồi dừng khoảng **5–6**, quan sát mascot. Bấm **Finish check-in**, sau đó **Back to Today** trong bảng xác nhận.
-- **Lời dẫn:** “Sau tập, FitLens tổng kết phần vừa ghi và hỏi mức độ người dùng cảm nhận. Mascot phản hồi theo check-in, thay vì chỉ đưa ra một bảng số.”
-- **Kỳ vọng:** luồng thử một hiệp hiển thị **1 set**, không phải 18 set của recap mẫu. Giá trị so sánh hình gấu tùy khối lượng vừa nhập; bodyweight 0 kg có thể không tạo con số volume ấn tượng. Không nhập khối lượng giả lớn để làm đẹp kết quả.
-- **Nếu muốn cho xem đầy đủ phần minh họa đẹp:** mở riêng `workout-review.html` không có `completed` ở nhánh mở rộng và giới thiệu là **recap mẫu**, không thay nó vào luồng dữ liệu vừa tạo.
-
-![Recap mẫu — hình gấu và bố cục tổng kết; số này không phải kết quả một hiệp demo](docs/demo/review.png)
-
-### 3:40–4:10 — Chứng minh kết quả đã đi qua các màn
-
-- **Thao tác:** tại Today xem nhịp tuần **1 of 3 sessions** (nếu đã đặt goal 3). Vào **Plan**, chỉ vào buổi vừa tập có trạng thái **Done**. Có thể mở Activity để xem lịch sử nếu còn thời gian.
-- **Lời dẫn:** “Kết quả được ghi lại trong prototype: tiến độ tuần tăng và buổi trên lịch đổi trạng thái. Người dùng không cần nhập lại ở từng màn.”
-- **Lưu ý:** số bước mẫu và recap năm không tự thay đổi theo buổi vừa tập. Dùng Home không có `preview`; các trang preview luôn hiển thị fixture riêng.
-
-### 4:10–4:50 — Kết bằng điểm nhấn thị giác: Insights → recap năm
-
-- **Thao tác:** bấm **Insights**, mở thẻ **2025**, xem bìa rồi chọn chương **Your familiar loop** hoặc **Heavier than you think**, sau đó **Your year, to keep**. Dùng các đoạn tiến độ đầu trang để chọn, không cần chạy đủ 11 chương.
-- **Lời dẫn:** “Ngoài trải nghiệm từng buổi, FitLens còn kể lại hành trình bằng recap và poster. Đây là dữ liệu một năm giả lập để trình diễn thiết kế, không tổng hợp từ một hiệp vừa demo.”
-- **Nếu còn thời gian:** thêm Walk và Food theo mục 4; các phần đẹp nhất vẫn có hướng dẫn đầy đủ ở đó.
+![Recap mẫu — mascot và các khối tổng kết](docs/demo/review.png)
 
 ![Recap năm — bìa story](docs/demo/year.png)
 
-### 4:50–5:00 — Kết luận
-
-“Luồng vừa rồi đi từ lập lịch, tập, ghi kết quả đến check-in và xem tiến độ. Camera, Health, AI và thông báo hiện ở mức thiết kế/mô phỏng và cần tích hợp thật ở ứng dụng điện thoại.”
-
 ## 4. Phần mở rộng — giữ những màn đẹp và có hướng dẫn chi tiết
 
-Sau luồng chính, chọn thêm các đoạn dưới theo thời gian. **Walk và Food phù hợp bản 7–8 phút; recap mẫu sau tập có thể mở riêng để giới thiệu đầy đủ minh họa.** Các mục Plan/Workout bên dưới cũng là tài liệu tra cứu khi giảng viên hỏi sâu hơn.
+Các đoạn dưới là tài liệu tra cứu cho tour và phần hỏi đáp. Mốc 4 phút chỉ dùng bảng ở mục 3; không đọc hoặc thực hiện toàn bộ phần này trên sân khấu.
 
 ### Steps: số liệu có ngữ cảnh
 
@@ -216,7 +185,7 @@ Preview tách khỏi tiến độ thật đang lưu; không dùng các trang m�
 - **Monthly recap:** Insights → thẻ **September**, hoặc `monthly-recap.html`. Có 2 trang; vuốt hoặc dùng phím trái/phải trên vùng story. Trang biểu đồ cần một nhịp để chạy hoạt ảnh.
 - **Bộ phận cơ thể trong workout review:** xem tổng quan cơ và các góc nhìn; phần báo khó chịu cho chọn vùng và ghi nhận phản hồi.
 - **Chat:** mở từ ngữ cảnh Food hoặc bài tập. Dùng câu hỏi gợi ý sẵn; câu trả lời là mẫu cục bộ, không phải AI trực tuyến.
-- **Profile:** `profile.html` thể hiện hồ sơ, dụng cụ, mục tiêu và vùng cơ thể cần lưu ý. Đây là nhánh giải thích cá nhân hóa; không nhất thiết đưa vào demo 5 phút.
+- **Profile:** `profile.html` thể hiện hồ sơ, dụng cụ, mục tiêu và vùng cơ thể cần lưu ý. Đây là nhánh giải thích cá nhân hóa; không nhất thiết đưa vào tour 4 phút.
 
 ## 5. Bản đồ các màn hiện có
 
@@ -286,7 +255,7 @@ Chưa có xác minh đầy đủ quyền sử dụng ảnh Food; ghi chú nguồ
 - [ ] Đã thử bằng đúng máy, trình duyệt, màn hình chiếu và kích thước điện thoại sẽ dùng.
 - [ ] Đã mở các tab theo thứ tự; biết URL quay về khi lỡ thao tác.
 - [ ] Đã diễn toàn bộ kịch bản một lần, bấm nút thật và đọc lời dẫn thành tiếng.
-- [ ] Đã chọn bản 3/5/7–8 phút; luồng chính luôn có Plan và Workout, chỉ rút gọn phần mở rộng.
+- [ ] Đã bấm giờ đúng 4 phút cho tour UI và mở sẵn các tab theo thứ tự mục 3.
 - [ ] Có bản ZIP local; không phụ thuộc tải GitHub trong lớp.
 - [ ] Nếu cần video dự phòng: quay màn hình một lượt demo đã chạy thành công. **Repo chưa kèm video demo.**
 
