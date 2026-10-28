@@ -176,7 +176,10 @@
     link.hidden = false;
   }
   const content = document.querySelector('#home-scroll');
-  content.addEventListener('scroll', () => { phone.dataset.scrolled = String(content.scrollTop > 8); }, {passive:true});
+  content.addEventListener('scroll', () => {
+    phone.dataset.scrolled = String(content.scrollTop > 8);
+    phone.dataset.scrolledDeep = String(content.scrollTop > 90);
+  }, {passive:true});
   applyLatestCheckIn();
   syncMotion();
   document.addEventListener('visibilitychange', () => {

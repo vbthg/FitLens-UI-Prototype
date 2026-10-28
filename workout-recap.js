@@ -11,3 +11,5 @@ $('#time-comparison').replaceChildren(document.createTextNode(`≈ ${Math.round(
 for(let i=0;i<muscleDistribution.totalSets;i++)$('#set-mosaic').append(document.createElement('i'));
 FitLensMuscleMap.mount($('#session-muscle-map'),muscleDistribution,{mode:completed?'Completed session':'Sample session',intro:completed?`${muscleDistribution.totalSets} completed ${muscleDistribution.totalSets===1?'set':'sets'}`:`${muscleDistribution.totalSets} sample sets`});
 if(completed){const note=document.querySelector('.counting-note p:last-child');if(note)note.textContent='This recap uses the sets you marked complete. Bodyweight movements contribute no added-load volume.';}
+
+if(completed){const done=(completed.logs||[]).flat().filter(s=>s.done).length;document.querySelector('.sets-card strong>span:last-child').textContent=done===1?' set':' sets';if(completed.seconds<60)document.getElementById('stat-duration').firstChild.textContent='<1';}

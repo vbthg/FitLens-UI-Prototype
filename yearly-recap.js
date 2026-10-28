@@ -231,7 +231,6 @@
       ctx.fillStyle = '#29483b'; ctx.font = '900 28px Nunito'; ctx.fillText('F I T L E N S', 80, 100);
       ctx.font = '800 22px Nunito'; ctx.textAlign = 'right'; ctx.fillText('THONG’S YEAR', 1000, 100); ctx.textAlign = 'left';
       ctx.font = '1000 270px Nunito'; ctx.fillText('2025', 65, 375);
-      ctx.fillStyle = '#cb7855'; ctx.font = '600 180px Nunito'; ctx.fillText('↗', 815, 360);
       const fit = (img, x, y, w, h) => { const r = Math.min(w / img.naturalWidth, h / img.naturalHeight); const iw = img.naturalWidth * r, ih = img.naturalHeight * r; ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih); };
       fit(bus, 360, 450, 650, 270);
       ctx.save(); ctx.translate(280, 595); ctx.rotate(-.18); fit(bear, -180, -150, 360, 300); ctx.restore();
