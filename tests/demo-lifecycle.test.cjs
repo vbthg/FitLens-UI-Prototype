@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict'),data=new Map(),recorded=[];
+global.localStorage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+global.sessionStorage={getItem:()=>null};global.FitLensRhythm={record:event=>recorded.push(event)};
+const M=require('../training-model.js'),t=M.saveTemplate({name:'My workout',routine:'full',minutes:20,items:[{id:'wall',sets:2,reps:'8',rest:60}]}),planned=M.add(t.id,M.today());
+const stopped=M.complete({sessionId:planned.id,id:'stopped-attempt',outcome:'stopped',seconds:100,items:t.items,logs:[[{weight:0,reps:8,done:true},{weight:0,reps:null,done:false}]]});
+assert.equal(stopped.outcome,'stopped');assert.equal(M.find(planned.id).status,'planned');assert.equal(recorded.length,0);
+M.complete({sessionId:planned.id,id:'stopped-attempt',outcome:'stopped'});assert.equal(M.read().history.length,1);
+M.complete({sessionId:planned.id,id:'retry',seconds:600,items:t.items,logs:[[{weight:0,reps:8,done:true}]]});
+assert.equal(M.read().history.length,2);assert.equal(M.find(planned.id).status,'completed');assert.equal(recorded.length,1);
+M.removeTemplate(t.id);assert.equal(M.template(t.id),null);assert.equal(M.find(planned.id).items.length,1);assert.equal(M.read().history.length,2);assert.throws(()=>M.removeTemplate('upper'));
+console.log('PASS stopped/retried planned sessions remain distinct, stopped work does not complete goal, delete preserves planned snapshots/history and starter workouts.');

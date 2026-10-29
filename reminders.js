@@ -1,5 +1,20 @@
 (() => {
 'use strict';
+const legacyParams=new URLSearchParams(location.search);
+if(legacyParams.get('from')!=='draft'&&!legacyParams.has('sessions')){
+ const state=FitLensTraining.read();let id=null;
+ if(legacyParams.has('single'))id=state.legacyImports?.['single:'+legacyParams.get('single')]?.sessionId;
+ else{let old;try{old=JSON.parse(sessionStorage.getItem('fitlens:weekly-plan'));}catch{}
+ const requested=legacyParams.get('session'),day=legacyParams.has('day')?Number(legacyParams.get('day')):null;
+ const entry=old?.days?.find((d,i)=>d&&(requested?d.sessionId===requested:day!==null?i===day:true));
+ if(entry)id=state.legacyImports?.['week:'+old.weekStart+':'+(entry.sessionId||old.days.indexOf(entry)+'-'+entry.id)]?.sessionId;
+ if(!id&&requested){const matches=Object.entries(state.legacyImports||{}).filter(([key])=>key.startsWith('week:')&&key.endsWith(':'+requested)).map(([,value])=>state.sessions.find(s=>s.id===value.sessionId)).filter(s=>s&&s.status==='planned').sort((a,b)=>a.date.localeCompare(b.date));id=matches.find(s=>s.date>=FitLensTraining.today())?.id||matches[0]?.id;}
+ if(!id&&!requested&&day===null)id=FitLensTraining.next(state)?.id;
+ }
+ // Let the existing canonical time editor handle old bookmarked links, even if unavailable.
+ legacyParams.set('sessions',id||'unavailable');legacyParams.delete('draft');
+ history.replaceState(null,'',location.pathname+'?'+legacyParams);
+}
 if(new URLSearchParams(location.search).has('sessions'))return;
 const $=s=>document.querySelector(s),m=FitLensReminders,params=new URLSearchParams(location.search);
 const draft=params.get('from')==='draft',singleId=params.get('single'),planKey=draft?'fitlens:weekly-plan-edit':'fitlens:weekly-plan';

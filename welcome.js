@@ -4,10 +4,20 @@
   const $ = selector => document.querySelector(selector);
   const root = $('.onboarding'), input = $('#preferred-name'), form = $('#name-form');
   const back = $('#onboarding-back'), confirm = $('.confirm-button');
-  const scenes = {welcome:$('#welcome-scene'),'name-entry':$('#name-scene'),'name-greeting':$('#greeting-scene'),'health-intro':$('#health-scene'),'health-requesting':$('#health-scene'),'health-response':$('#health-response-scene'),'notifications-intro':$('#notifications-scene'),'notifications-requesting':$('#notifications-scene'),'notifications-response':$('#notifications-response-scene'),'discover-next':$('#discover-scene')};
+  const scenes = {welcome:$('#welcome-scene'),'name-entry':$('#name-scene'),'name-greeting':$('#greeting-scene'),'health-intro':$('#health-scene'),'health-requesting':$('#health-scene'),'health-response':$('#health-response-scene'),'notifications-intro':$('#notifications-scene'),'notifications-requesting':$('#notifications-scene'),'notifications-response':$('#notifications-response-scene')};
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const viewport = window.visualViewport;
   const store = FitLensProfile.createStore(localStorage, sessionStorage);
+  const replay = new URLSearchParams(location.search).get('replay') === '1';
+  function returnToToday() {
+    if (!replay && FitLensProfile.createStore(localStorage, sessionStorage).read().onboarding) {
+      location.replace('home.html');
+      return true;
+    }
+    return false;
+  }
+  if (returnToToday()) return;
+  addEventListener('pageshow', returnToToday);
   const localPreview = ['localhost','127.0.0.1','[::1]'].includes(location.hostname) || location.protocol === 'file:';
   const demoEnabled = localPreview && new URLSearchParams(location.search).get('healthDemo') === '1';
   const health = FitLensHealth.createService({demo:demoEnabled ? () => $('#health-demo-scenario').value : null});
@@ -385,6 +395,7 @@
     else if (history.state?.fitlensIntroduction && state !== 'welcome') history.back();
   };
   addEventListener('popstate', event => {
+    if (returnToToday()) return;
     const next = event.state?.fitlensIntroduction;
     show(Object.hasOwn(scenes,next) ? next : 'welcome', {push:false});
   });
@@ -428,8 +439,14 @@
   });
   $('#continue-notifications').onclick=()=>{
     if(state!=='notifications-response'||stageTransition)return;
-    const event=new CustomEvent('fitlens:onboarding-next',{cancelable:true,detail:{step:'discover',notificationStatus:notificationResult?.status}});
-    if(root.dispatchEvent(event))show('discover-next');
+    const event=new CustomEvent('fitlens:onboarding-next',{cancelable:true,detail:{step:'home',notificationStatus:notificationResult?.status}});
+    if (!root.dispatchEvent(event)) return;
+    if (!store.save('onboarding', true)) {
+      $('#notification-settings-status').textContent='Your setup could not be saved. Please try again.';
+      return;
+    }
+    $('#continue-notifications').disabled=true;
+    location.replace('home.html');
   };
   viewport?.addEventListener('resize', viewportLayout);
   viewport?.addEventListener('scroll', viewportLayout);

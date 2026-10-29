@@ -6,6 +6,12 @@ FitLens giúp người dùng tạo nhịp vận động phù hợp, ghi nhận c
 
 Đây là **HTML/CSS/JavaScript prototype tương tác**, chưa phải ứng dụng điện thoại kết nối thiết bị. Đọc mục 1–4 trước để trình bày; các mục sau dùng khi diễn tập hoặc trả lời câu hỏi. Các ảnh bên dưới được chụp từ chính bản sao này. Xem [biên bản kiểm tra](docs/demo/VALIDATION.md) để biết phạm vi đã thử.
 
+### Cập nhật 29/10/2026
+
+- Luồng Welcome hoàn tất sẽ mở Today và giữ tên đã nhập; Health và thông báo vẫn tùy chọn. Người đã hoàn tất mở Welcome sẽ trở về Home; dùng `welcome.html?replay=1` nếu muốn xem lại onboarding.
+- Setup tuần đầu, Today, Plan và reminder dùng cùng lịch `FitLensTraining`. Lịch cũ được nhập có kiểm tra xung đột; bản nháp và Weekly Goal vẫn riêng biệt.
+- Bổ sung trang Review setup đang được Profile liên kết tới và các kiểm tra hồi quy. Xem [hướng dẫn chạy kiểm tra](tests/README.md).
+
 ## 1. Mở và chuẩn bị trong 5 phút
 
 1. Clone hoặc tải ZIP repo, giải nén; mở terminal tại thư mục có `home.html`.

@@ -1,0 +1,7 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),M=require('../steps-detail-model.js');
+const context={window:{}};vm.runInNewContext(fs.readFileSync('steps-sun-data.js','utf8'),context);const data=M.build(context.window.FitLensStepsData);
+assert.equal(data.records.length,14);assert.equal(data.today.steps,3150);assert.equal(data.today.baseline,4500);assert.equal(data.today.cutoff,19);assert.equal(M.at(data.today.typical,19),4500);
+for(const r of data.records){assert.equal(r.bins.length,24);assert.equal(r.actual.length,25);assert.equal(r.bins.reduce((a,b)=>a+b,0),r.steps);assert.equal(M.at(r.actual,r.cutoff),r.steps);assert.ok(r.bins.every(n=>Number.isInteger(n)&&n>=0));assert.ok(r.actual.every((n,i)=>!i||n>=r.actual[i-1]));assert.ok(r.typical.every((n,i)=>!i||n>=r.typical[i-1]));assert.equal(M.at(r.actual,0),0);if(r.today)assert.ok(r.bins.slice(19).every(n=>n===0));}
+for(const metric of ['steps','distance','minutes'])for(const count of [7,14]){const list=data.records.slice(-count),o=M.overview(list,metric);assert.equal(o.values.length,count);assert.equal(o.total,o.values.reduce((a,b)=>a+b,0));assert.equal(o.average,o.total/count);}
+assert.ok(M.at(data.today.typical,8)<M.at(data.today.typical,19));assert.equal(M.at(data.today.actual,-2),0);assert.equal(M.at(data.today.actual,30),3150);
+console.log('PASS: hourly sums, cumulative monotonicity, same-time reference, future cutoff, shared Home values, 7/14-day metric totals.');

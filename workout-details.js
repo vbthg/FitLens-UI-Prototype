@@ -50,7 +50,7 @@ fields.oninput=()=>{$('#routine-title').textContent=$('#workout-name').value||'M
 function snapshot(){if(!$('#workout-name').reportValidity()||!$('#workout-minutes').reportValidity())return null;return {...storedSession,name:$('#workout-name').value.trim(),minutes:Number($('#workout-minutes').value),items:M.cleanItems(items)};}
 const note=$('.closing-line');note.className='detail-message';note.setAttribute('role','status');note.textContent=planned?'Changes apply to this session only.':storedSession.starter?'Save your own version to keep these changes.':'Your workouts, ready whenever you are.';
 function tell(text){note.textContent=text;announce(text);}
-function persist(){const value=snapshot();if(!value)return null;try{storedSession=planned?M.updateSession(planned,value,draft):M.saveTemplate({...value,id:value.starter?null:value.id,starter:false});if(!planned)history.replaceState(null,'','workout-details.html?workout='+encodeURIComponent(storedSession.id));tell(planned?'Session saved.':'Workout saved to your library.');syncDeleteWorkout();rememberWorkoutSave();return storedSession;}catch(e){tell(e.message);return null;}}
+function persist(){if(planned&&JSON.stringify(M.find(planned,draft))!==JSON.stringify(storedSession)){tell('This session changed elsewhere. Reload it before saving your changes.');return null;}const value=snapshot();if(!value)return null;try{storedSession=planned?M.updateSession(planned,value,draft):M.saveTemplate({...value,id:value.starter?null:value.id,starter:false});if(!planned)history.replaceState(null,'','workout-details.html?workout='+encodeURIComponent(storedSession.id));tell(planned?'Session saved.':'Workout saved to your library.');syncDeleteWorkout();rememberWorkoutSave();return storedSession;}catch(e){tell(e.message);return null;}}
 const save=document.createElement('button');save.type='button';save.id='save-workout';save.className='detail-save';save.textContent=planned?'Save this session':'Save workout';save.onclick=persist;fields.after(save);
 const schedule=document.createElement('button');schedule.type='button';schedule.className='detail-schedule';schedule.textContent=planned?'Time & reminder':'Schedule for later';schedule.onclick=()=>{const value=snapshot();if(!value)return;if(planned){const saved=persist();if(!saved)return;FitLensTimeSheet([planned],{draft,onSaved:()=>{storedSession=M.find(planned,draft);$('#muscle-caption').textContent=sessionDateLabel(storedSession.date)+' · '+(storedSession.time||'No time set');tell('Time saved for this session.');}});}else try{FitLensSchedule(value);}catch(e){tell(e.message);}};$('#start-workout').after(schedule);
 if(draft){$('#start-workout').textContent='Try this workout';note.textContent='Try this workout on its own. Your suggested week stays a draft.';}
@@ -79,3 +79,12 @@ function syncSaveWorkout(){const dirty=workoutFingerprint()!==savedWorkoutFinger
 const renderBeforeSaveState=render;render=function(){renderBeforeSaveState();syncSaveWorkout();};
 fields.addEventListener('input',syncSaveWorkout);
 syncSaveWorkout();
+
+// A restored or already-open Details page must not save an obsolete occurrence over Plan.
+function refreshPlannedSession(){
+ if(!planned||JSON.stringify(M.find(planned,draft))===JSON.stringify(storedSession))return;
+ if(workoutFingerprint()!==savedWorkoutFingerprint){tell('This session changed elsewhere. Reload it before saving your changes.');return;}
+ window.FitLensAllowWorkoutLeave();location.reload();
+}
+addEventListener('pageshow',refreshPlannedSession);
+addEventListener('storage',event=>{if(event.key===M.KEY)refreshPlannedSession();});

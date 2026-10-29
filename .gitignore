@@ -6,3 +6,10 @@ node_modules/
 handoff/
 private-review/
 *.log
+
+# Local verification artifacts
+test-output/
+tmp/
+public-share/
+snapshots/
+output/

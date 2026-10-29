@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict');
+const F=require('../food-chat.js');
+const recipe={type:'meal',title:'Cơm gà',choices:{allergens:['egg']},recipe:{minutes:30,ingredients:['Chicken','Rice'],tools:['Saucepan'],condition:'Cooked rice is ready.'}};
+assert(F.valid({source:'food',context:recipe,returnUrl:'food.html?meal=m-16'}));
+assert(!F.valid({source:'food',context:recipe,returnUrl:'https://example.com'}));
+assert(!F.valid({source:'food',context:recipe,returnUrl:'food.html.evil'}));
+assert(!F.valid({source:'food',context:{type:'workout'},returnUrl:'food.html'}));
+assert(F.reply('I have less time',recipe).paragraphs.includes('Cooked rice is ready.'));
+assert(F.reply('Show the recipe ingredients',recipe).paragraphs.some(p=>p.includes('Chicken\nRice')));
+assert(F.reply('I only have eggs and rice',recipe).paragraphs.some(p=>p.includes('ingredients to avoid')));
+assert(F.reply('I only have 15 minutes',null).paragraphs[0].includes('15'));
+assert(!F.reply('I have less time',{...recipe,recipe:{...recipe.recipe,minutes:null}}).paragraphs.join(' ').includes('null'));
+assert(F.reply('Can I change this for an allergy?',recipe).paragraphs[0].includes('cannot confirm'));
+assert(F.reply('I only have a pan',null).paragraphs[0].includes('pan'));
+assert(F.reply('Something else',null).paragraphs[0].includes('sample replies'));
+console.log('PASS: food handoff validation, recipe-specific sample replies, ingredient exclusions, restaurant timing and general-food fallback.');

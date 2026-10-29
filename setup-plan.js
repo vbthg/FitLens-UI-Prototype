@@ -1,6 +1,8 @@
 (() => {
 'use strict';
 const $=s=>document.querySelector(s),model=FitLensPlan,phone=$('.setup-phone');
+// Existing committed-week links open the authoritative calendar. Draft editing stays here.
+if(new URLSearchParams(location.search).get('view')==='week'){const next=FitLensTraining.next();location.replace('plan.html'+(next?'?week='+FitLensTraining.weekStart(next.date):''));return;}
 let state=model.normalize(),step=0,plan=null,selectedDay=null,moving=false;
 try{state=model.normalize(JSON.parse(sessionStorage.getItem('fitlens:plan-draft'))||{});}catch{}
 const face=FitLensFace.mount($('#setup-face'),{expression:'waiting',allowMotion:()=>true,themeTarget:$('#setup-theme')});
@@ -57,7 +59,7 @@ function cancelMove(){moving=false;$('#move-instruction').textContent='';[...$('
 $('#move-session').addEventListener('click',()=>{if(moving){cancelMove();return;}moving=true;$('#move-instruction').textContent='Choose another day. Occupied days will swap.';$('#move-session').textContent='Cancel move';[...$('#draft-week').querySelectorAll('.draft-day')].forEach((b,i)=>b.classList.toggle('move-target',i!==selectedDay));});
 $('#setup-back').addEventListener('click',()=>{if(step===0)location.href='home.html?v=reminders-8';else{cancelMove();go(step-1);}});
 $('#edit-answers').addEventListener('click',()=>{cancelMove();go(0);});$('#edit-constraints').addEventListener('click',()=>go(2));
-$('#setup-next').addEventListener('click',()=>{if($('#setup-next').disabled)return;if(step<2){go(step+1);return;}if(step===2){plan=model.build(state);selectedDay=null;moving=false;go(3);return;}try{sessionStorage.setItem('fitlens:weekly-plan',JSON.stringify(plan));location.href='home.html?v=reminders-8';}catch{$('#setup-hint').textContent='This browser cannot keep your plan. You can still explore the draft.';}});
+$('#setup-next').addEventListener('click',()=>{if($('#setup-next').disabled)return;if(step<2){go(step+1);return;}if(step===2){plan=model.build(state);selectedDay=null;moving=false;go(3);return;}try{FitLensTraining.commitLegacy(plan);location.href='home.html?v=reminders-8';}catch(error){$('#setup-hint').textContent=error.message||'This browser cannot keep your plan. You can still explore the draft.';}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&moving){cancelMove();$('#move-session').focus();}});
 if(['week','draft'].includes(new URLSearchParams(location.search).get('view'))){try{const isDraft=new URLSearchParams(location.search).get('view')==='draft';const saved=model.restore(JSON.parse(sessionStorage.getItem(isDraft?'fitlens:weekly-plan-edit':'fitlens:weekly-plan')));if(saved){plan=saved;state=model.normalize(saved.form);go(3);}else go(0);}catch{go(0);}}else go(0);
 })();

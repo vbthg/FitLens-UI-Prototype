@@ -1,0 +1,20 @@
+const assert=require('node:assert/strict'),P=require('../profile-model.js'),F=require('../food-model.js');
+function memory(initial={}){const m=new Map(Object.entries(initial));return {getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),key:i=>[...m.keys()][i],get length(){return m.size;}};}
+const local=memory(),session=memory();let store=P.createStore(local,session);
+assert.deepEqual(store.read(),P.empty());
+session.setItem('fitlens:plan-draft',JSON.stringify({goal:'habit',frequency:3,duration:30,body:'no'}));
+assert.equal(P.seed(session).training.frequency,null);assert.equal(P.seed(session).body.reviewed,true);
+session.setItem('fitlens:weekly-plan','{invalid');assert.equal(P.seed(session).training.goal,'habit');
+const plan=JSON.stringify({version:1,form:{goal:'strength',experience:'returning',frequency:4,duration:45,place:'home',equipment:['mat'],body:'yes',regions:['knees']}});
+session.setItem('fitlens:weekly-plan',plan);local.setItem('fitlens:rhythm:v1','untouched');store=P.createStore(local,session);
+assert.equal(store.read().training.frequency,4);assert.deepEqual(store.read().body.areas,['knees']);
+assert.equal(store.save('training',{goal:'habit',experience:'new',frequency:2,duration:20}),true);
+assert.equal(session.getItem('fitlens:weekly-plan'),plan);assert.equal(local.getItem('fitlens:rhythm:v1'),'untouched');
+assert.equal(P.createStore(local,session).read().training.frequency,2);
+assert.deepEqual(P.clean({...P.empty(),space:{place:'home',equipment:['none','mat','mat','invalid']}}).space.equipment,['none']);
+const failing=P.createStore({getItem:()=>null,setItem:()=>{throw Error('quota');}},memory());assert.equal(failing.save('name','  Alex  '),false);assert.equal(failing.read().name,'Alex');
+const f=F.createStore(local);f.toggleSave('m-12');f.log('2026-10-27','m-12','Lunch',1);const old=JSON.stringify(f.get().logs);f.preferences({...f.get().preferences,diet:'vegetarian',reviewed:true});assert.equal(JSON.stringify(f.get().logs),old);assert.deepEqual(f.get().saved,['m-12']);
+local.setItem('other-app','keep');session.setItem('other-tab-data','keep');local.setItem('fitlens_logged_meals_2026-01-01','[]');assert.equal(P.erase(local,session).ok,true);assert.equal(local.length,1);assert.equal(session.length,1);assert.equal(local.getItem('other-app'),'keep');
+assert.equal(P.erase({length:1,key:()=>P.KEY,removeItem:()=>{throw Error('blocked');}},memory()).ok,false);
+const legacy=memory({'fitlens-reminder-v1':'{}'});assert.equal(P.erase(legacy,memory()).ok,true);assert.equal(legacy.length,0);
+console.log('Profile model: import, validation, isolated saves, food preservation, storage failure and scoped erase passed.');
